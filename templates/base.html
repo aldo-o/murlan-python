@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/98.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
+
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+            integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+            crossorigin="anonymous"
+    >
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</head>
+<body>
+<div class="window">
+    <div class="title-bar">
+        <div class="title-bar-text">Murlan - Online Multiplayer Card Game</div>
+        <div class="title-bar-controls">
+            <button aria-label="Help"></button>
+            <button aria-label="Close"></button>
+        </div>
+    </div>
+    <div class="window-body">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div class="status-bar">
+        <p class="status-bar-field">Press F1 for help</p>
+        <p class="status-bar-field">Slide 1</p>
+        <p class="status-bar-field">CPU Usage: 14%</p>
+    </div>
+</div>
+</body>
+</html>

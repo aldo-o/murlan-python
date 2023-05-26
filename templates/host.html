@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post" class="buttons">
+        <div class="field-row-stacked" style="width: 200px">
+            <label for="name">Name</label>
+            <input id="name" type="text" name="name" value="{{ name }}"/>
+        </div>
+        <div class="field-row-stacked" style="width: 200px">
+            <fieldset>
+                <legend>Total number of players</legend>
+                <div class="field-row">
+                    <input id="player_3" type="radio" name="players_limit"
+                           value="3" {{ "checked" if players_limit==3 }}>
+                    <label for="player_3">3</label>
+                </div>
+                <div class="field-row">
+                    <input id="player_4" type="radio" name="players_limit"
+                           value="4" {{ "checked" if players_limit==4 }}>
+                    <label for="player_4">4</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="field-row-stacked" style="width: 200px">
+            <button type="submit">Join a Room</button>
+        </div>
+
+        {% if error %}
+            <div class="field-row-stacked" style="width: 280px">
+                <blockquote style="color: red;">
+                    {{ error }}
+                </blockquote>
+            </div>
+        {% endif %}
+
+    </form>
+{% endblock %}

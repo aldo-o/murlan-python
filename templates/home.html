@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table style="background: silver;">
+        <tbody>
+        <tr>
+            <td style="padding-bottom: 10px;">
+                <button onclick="window.location.href='{{ url_for('host') }}';">Host a game</button>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-bottom: 10px;">
+                <button onclick="window.location.href='{{ url_for('host') }}';">Join a public game</button>
+            </td>
+        </tr>
+        <tr>
+            <form method="post">
+                <td style="padding-bottom: 10px;">
+                    <button type="submit">Join a private game</button>
+                </td>
+                <td style="padding-bottom: 10px;">
+                    <input id="room_id" placeholder="Room id" type="text" name="room_id" value="{{ room_id }}"/>
+                </td>
+                <td style="padding-bottom: 10px;">
+                    <input id="name" placeholder="Name" type="text" name="name" value="{{ name }}"/>
+                </td>
+            </form>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="height: calc(100vh - 300px);">
+
+    </div>
+
+    {#    <div class="sunken-panel" style="height: 320px;">#}
+    {#        <table class="interactive">#}
+    {#            <thead>#}
+    {#            <tr>#}
+    {#                <th>Name</th>#}
+    {#                <th>Version</th>#}
+    {#                <th>Company</th>#}
+    {#                <th></th>#}
+    {#            </tr>#}
+    {#            </thead>#}
+    {#            <tbody>#}
+    {#            <tr>#}
+    {#                <td>MySQL ODBC 3.51 Driver</td>#}
+    {#                <td>3.51.11.00</td>#}
+    {#                <td>MySQL AB</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            <tr>#}
+    {#                <td>SQL Server</td>#}
+    {#                <td>3.70.06.23</td>#}
+    {#                <td>Microsoft Corporation</td>#}
+    {#                <td><a href="base.html">Join</a></td>#}
+    {#            </tr>#}
+    {#            </tbody>#}
+    {#        </table>#}
+    {#    </div>#}
+
+    <script>
+        document.querySelectorAll('table.interactive').forEach(element => {
+            element.addEventListener('click', (event) => {
+                console.log(event.composedPath())
+
+                const r = document.querySelector("tr.highlighted");
+                if (r) {
+                    r.classList.remove("highlighted");
+                }
+
+                const row = event.composedPath().find(element => element.tagName === 'TR' && element.parentElement.tagName === 'TBODY');
+                if (row) {
+                    row.classList.toggle('highlighted');
+                }
+            })
+        });
+    </script>
+    {#    <form method="post" class="buttons">#}
+    {#        <h3>Enter The Chat Room</h3>#}
+    {#        <div>#}
+    {#            <label>Name:</label>#}
+    {#            <input#}
+    {#                    type="text"#}
+    {#                    placeholder="Pick a name!"#}
+    {#                    name="name"#}
+    {#                    value="{{ name }}"#}
+    {#            />#}
+    {#        </div>#}
+    {#        <div class="join">#}
+    {#            <input type="text" placeholder="Room Code" name="code" value="{{ code }}"/>#}
+    {#            <button type="submit" name="join">Join a Room</button>#}
+    {#        </div>#}
+    {#        <button type="submit" name="create" class="create-btn">Create a Room</button>#}
+    {#        {% if error %}#}
+    {#            <ul>#}
+    {#                <li>{{ error }}</li>#}
+    {#            </ul>#}
+    {#        {% endif %}#}
+    {#    </form>#}
+{% endblock %}

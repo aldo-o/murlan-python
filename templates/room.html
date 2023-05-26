@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        <h2>Room id: {{ room_id }}</h2>
+        {#        <div class="messages" id="messages"></div>#}
+        {#        <div class="inputs">#}
+        {#            <input#}
+        {#                    type="text"#}
+        {#                    rows="3"#}
+        {#                    placeholder="Message"#}
+        {#                    name="message"#}
+        {#                    id="message"#}
+        {#            />#}
+        {#            <button type="button" name="send" id="send-btn" onClick="sendMessage()">#}
+        {#                Send#}
+        {#            </button>#}
+        {#        </div>#}
+
+        <div id="opponent_1"></div>
+        <br/>
+        <div id="opponent_2"></div>
+        <br/>
+        <hr/>
+        <div id="pd"></div>
+        <br/>
+        <p>My hand</p>
+        <div id="hand"></div>
+        <br/>
+        <hr/>
+        <p>Cards in table</p>
+        <div id="cards_in_play"></div>
+        <br/>
+        <hr/>
+        <p>Exchange</p>
+        <div id="card_exchange">
+            <table style="background: silver;">
+                <tbody>
+                <tr>
+                    <th id="last_name">Aldo -></th>
+                    <th id="first_name"><- Sindi</th>
+                </tr>
+                <tr>
+                    <th id="last_card"></th>
+                    <th id="first_card"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var socketio = io();
+
+        const messages = document.getElementById("messages");
+
+        const createMessage = (name, msg) => {
+            const content = `
+    <div class="text">
+        <span>
+            <strong>${name}</strong>: ${msg}
+        </span>
+        <span class="muted">
+            ${new Date().toLocaleString()}
+        </span>
+    </div>
+    `;
+            messages.innerHTML += content;
+        };
+
+        let to_drop = [];
+        let my_id = null
+
+        socketio.on("message", (data) => {
+            console.log(data)
+
+            if (data.priv_play) {
+                const {my_deck, opponent_cards, id} = data.priv_play;
+                my_id = id;
+
+                let div = document.getElementById("hand");
+                div.innerHTML = "";
+
+                for (let i = 0; i < my_deck.length; i++) {
+                    let btn = document.createElement("button");
+                    btn.innerHTML = my_deck[i]["card"];
+                    btn.value = `${i}`;
+                    btn.onclick = function (e) {
+                        const get_idx = to_drop.indexOf(e.target.value);
+
+                        if (get_idx === -1)
+                            to_drop.push(e.target.value);
+                        else to_drop.splice(get_idx, 1);
+
+                        console.log(to_drop);
+                    }
+
+                    div.appendChild(btn);
+                    // document.body.appendChild(btn);
+                }
+
+                for (let i = 0; i < opponent_cards.length; i++) {
+
+                    let opponent_div = document.getElementById(`opponent_${i + 1}`);
+                    opponent_div.innerHTML = "";
+
+                    for (let j = 0; j < opponent_cards[i]; j++) {
+                        let btn = document.createElement("button");
+                        btn.innerHTML = `OP ${i + 1}`;
+                        opponent_div.appendChild(btn);
+                    }
+
+                }
+            }
+
+            if (data.play) {
+                const {cards_in_play, current_turn} = data.play;
+
+                let cards_in_play_div = document.getElementById("cards_in_play");
+                cards_in_play_div.innerHTML = "";
+
+                for (let i = 0; i < cards_in_play.length; i++) {
+                    let btn = document.createElement("button");
+                    btn.innerHTML = cards_in_play[i]["card"];
+                    cards_in_play_div.appendChild(btn);
+                }
+
+                let d = document.getElementById("pd");
+                d.innerHTML = "";
+
+                if (!data.play.card_exchange) {
+                    let b = document.createElement("button");
+                    b.innerHTML = "Pass";
+                    b.value = "pass";
+
+
+                    if (current_turn === my_id) {
+                        b.onclick = function (e) {
+                            console.log(e.target.value);
+                            socketio.emit("drop", {data: []});
+                        }
+                    } else {
+                        b.disabled = true;
+                    }
+                    // document.body.appendChild(b);
+                    d.appendChild(b);
+
+
+                    b = document.createElement("button");
+                    b.innerHTML = "Drop";
+                    b.value = "drop";
+
+                    if (current_turn === my_id) {
+                        b.onclick = function (e) {
+                            console.log(to_drop);
+                            x();
+                        }
+                    } else {
+                        b.disabled = true;
+                    }
+
+                    // document.body.appendChild(b);
+                    d.appendChild(b);
+                } else if(current_turn === my_id) {
+                    let b = document.createElement("button");
+                    b.innerHTML = "Exchange";
+                    b.value = "exchange";
+                    b.onclick = function (e) {
+                        console.log(e.target.value);
+                        socketio.emit("exchange_card", {data: to_drop});
+                    }
+
+                    // document.body.appendChild(b);
+                    d.appendChild(b);
+                }
+
+
+                if (data.play.card_exchange) {
+                    let d = document.getElementById("last_name");
+                    d.innerHTML = `${data.play.card_exchange.last.name} ->`;
+
+                    let e = document.getElementById("first_name");
+                    e.innerHTML = `<- ${data.play.card_exchange.first.name}`;
+
+
+                    let th1 = document.getElementById("last_card");
+                    let f = document.createElement("button");
+                    f.innerHTML = data.play.card_exchange.last.card;
+                    th1.appendChild(f);
+
+                    let th2 = document.getElementById("first_card");
+                    let f2 = document.createElement("button");
+                    f2.innerHTML = "";
+                    th2.appendChild(f);
+                }
+            }
+            // createMessage(data.name, data.message);
+        });
+
+        const x = () => {
+            socketio.emit("drop", {data: to_drop});
+            to_drop = []
+        }
+
+        socketio.on("drop", (data) => {
+            console.log(data)
+        });
+
+        const sendMessage = () => {
+            const message = document.getElementById("message");
+            if (message.value == "") return;
+            socketio.emit("message", {data: message.value});
+            message.value = "";
+        };
+    </script>
+    {% for msg in messages %}
+        <script type="text/javascript">
+            createMessage("{{msg.name}}", "{{msg.message}}");
+        </script>
+    {% endfor %} {% endblock %}
